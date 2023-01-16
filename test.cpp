@@ -22,11 +22,11 @@ int main() {
 
     for (long long i = 0; i < 100000000; i++) {
         sum += i;
-        cout << sum << endl;
+        //cout << sum << endl;
     }
     // find all the multiples of 2 from 1 to 100000000 and subtract them from the sum
 
-    cout << "Sum: " << sum << endl;
+    cout << "Sum: " << sum << endl;/*
 
     for (long long i = 0; i < 100000000; i++) {
         if (i == 0 || i == 2) {
@@ -39,6 +39,7 @@ int main() {
     }
 
     cout << "Sum: " << sum << endl;
+    */
 
     return 0;
 }
