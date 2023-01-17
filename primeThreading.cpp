@@ -8,41 +8,41 @@ using namespace std::chrono;
 
 std::mutex mtx;
 
-const int upperBound = 1000000 + 1;
-const int sqrtOfUpperBound = 1000 + 1;
+const long upperBound = 1000000 + 1;
+const long sqrtOfUpperBound = 1000 + 1;
 
-int getTicket(int ticketArray[sqrtOfUpperBound]);
-void checkOffNumber(int num, int ticketArray[sqrtOfUpperBound], map <int,bool> &isMultiple);
-void findMultiples(int num, map <int,bool> &isMultiple,int ticketArray[sqrtOfUpperBound]);
-void fillMap(map <int,bool> &isMultiple);
-void checkOffTicket (int num, int ticketArray[sqrtOfUpperBound]);
-void findPrimes(map <int,bool> &isMultiple, int ticketArray[sqrtOfUpperBound]);
+long getTicket(long ticketArray[sqrtOfUpperBound]);
+void checkOffNumber(long num, long ticketArray[sqrtOfUpperBound], map <long,bool> &isMultiple);
+void findMultiples(long num, map <long,bool> &isMultiple,long ticketArray[sqrtOfUpperBound]);
+void fillMap(map <long,bool> &isMultiple);
+void checkOffTicket (long num, long ticketArray[sqrtOfUpperBound]);
+void findPrimes(long startingNum, map <long,bool> &isMultiple, long ticketArray[sqrtOfUpperBound]);
 
 int main()
 {
     // start timer
     auto start = high_resolution_clock::now();
 
-    int ticketArray[sqrtOfUpperBound];
-    map <int,bool> isMultiple;
+    long ticketArray[sqrtOfUpperBound];
+    map <long,bool> isMultiple;
 
-    int sum;
+    long sum;
     // sum of all the number 1 to upperBound
     sum = ((upperBound - 1) * upperBound / 2) - 1;
-    int primeCount = upperBound - 2;
+    long primeCount = upperBound - 2;
     
     // fill the ticketArray
     ticketArray[0] = 0;
     ticketArray[1] = 0;
     
-    for (int i = 2; i < sqrtOfUpperBound; i++) {
+    for (long i = 2; i < sqrtOfUpperBound; i++) {
         ticketArray[i] = i;
     }
 
    
     // find all primes
     /*
-    for (int i = 2; i < sqrtOfUpperBound; i++) {
+    for (long i = 2; i < sqrtOfUpperBound; i++) {
         if (isMultiple[i] != true) {
             findMultiples(i, isMultiple, ticketArray);
         }
@@ -51,18 +51,18 @@ int main()
     
     
     // get ticket and find multiples
-    // TODo, add starting numbers coresponding to the first 8 primes
+    // TODO, add starting numbers coresponding to the first 8 primes
     
     //findPrimes(isMultiple, ticketArray);
     //create 8 threads and run findPrimes on each
-    thread t1(findPrimes, ref(isMultiple), ticketArray);
-    thread t2(findPrimes, ref(isMultiple), ticketArray);
-    thread t3(findPrimes, ref(isMultiple), ticketArray);
-    thread t4(findPrimes, ref(isMultiple), ticketArray);
-    thread t5(findPrimes, ref(isMultiple), ticketArray);
-    thread t6(findPrimes, ref(isMultiple), ticketArray);
-    thread t7(findPrimes, ref(isMultiple), ticketArray);
-    thread t8(findPrimes, ref(isMultiple), ticketArray);
+    thread t1(findPrimes, 2, ref(isMultiple), ticketArray);
+    thread t2(findPrimes, 3, ref(isMultiple), ticketArray);
+    thread t3(findPrimes, 5, ref(isMultiple), ticketArray);
+    thread t4(findPrimes, 7, ref(isMultiple), ticketArray);
+    thread t5(findPrimes, 11, ref(isMultiple), ticketArray);
+    thread t6(findPrimes, 13, ref(isMultiple), ticketArray);
+    thread t7(findPrimes, 17, ref(isMultiple), ticketArray);
+    thread t8(findPrimes, 19, ref(isMultiple), ticketArray);
 
     t1.join();
     t2.join();
@@ -73,9 +73,9 @@ int main()
     t7.join();
     t8.join();
 
-    // print all primes
+    // prlong all primes
     
-    for (int i = 2; i < upperBound; i++) {
+    for (long i = 2; i < upperBound; i++) {
         if (isMultiple[i] == true) {
             //cout << i << endl;
             sum -= i;
@@ -86,14 +86,14 @@ int main()
     cout << "Sum of primes: " << sum << endl;
     cout << "Number of primes: " << primeCount << endl;
 
-    /*for (int i = 250000; true; i--) {
+    /*for (long i = 250000; true; i--) {
         if ((i) * (sizeof(bool)) < 65536) {
             cout << "Magic number: " << i << endl;
             break;
         }
     }
     */
-    // end timer and print time
+    // end timer and prlong time
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     cout << "Time taken: " << endl;
@@ -105,9 +105,9 @@ int main()
     return 0;
 }
 
-int getTicket(int ticketArray[sqrtOfUpperBound]) {
+long getTicket(long ticketArray[sqrtOfUpperBound]) {
     // goes through the ticket array and returns the first non-zero number
-    for (int i = 0; i < sqrtOfUpperBound; i++) {
+    for (long i = 0; i < sqrtOfUpperBound; i++) {
         if (ticketArray[i] != 0) {
             return ticketArray[i];
         }
@@ -115,53 +115,53 @@ int getTicket(int ticketArray[sqrtOfUpperBound]) {
     return 0;
 }
 
-void checkOffNumber(int num, int ticketArray[sqrtOfUpperBound], map <int,bool> &isMultiple) {
+void checkOffNumber(long num, long ticketArray[sqrtOfUpperBound], map <long,bool> &isMultiple) {
     
     // find number in ticketArray and set it to 0
-    for (int i = 0; i < sqrtOfUpperBound; i++) {
+    for (long i = 0; i < sqrtOfUpperBound; i++) {
         if (ticketArray[i] == num) {
-            ticketArray[i] = 0;            
+            mtx.lock();
+            ticketArray[i] = 0;
+            mtx.unlock();            
             break;
         }
     } 
-
+    mtx.lock();
     isMultiple[num] = true;   
+    mtx.unlock();
     
 }
 
-void checkOffTicket (int num, int ticketArray[sqrtOfUpperBound]) {
-    for (int i = 0; i < sqrtOfUpperBound; i++) {
+void checkOffTicket (long num, long ticketArray[sqrtOfUpperBound]) {
+    for (long i = 0; i < sqrtOfUpperBound; i++) {
         if (ticketArray[i] == num) {
+            mtx.lock();
             ticketArray[i] = 0;
+            mtx.unlock();
             break;
         }
     }
 } 
 
-void findMultiples(int num, map <int,bool> &isMultiple,int ticketArray[sqrtOfUpperBound]) {
-    int currentNum = num * 2;
-
-    // make mutex
-    mtx.lock();
-    checkOffTicket(num, ticketArray);
-    mtx.unlock();
+void findMultiples(long num, map <long,bool> &isMultiple,long ticketArray[sqrtOfUpperBound]) {
+    long currentNum = num * 2;
+   
+    checkOffTicket(num, ticketArray); 
     
-    for (int i = currentNum; i < upperBound; i += num){
-        mtx.lock();
+    for (long i = currentNum; i < upperBound; i += num){
         checkOffNumber(i, ticketArray, isMultiple);
-        mtx.unlock();
     }          
     
 }
 
-void fillMap(map <int,bool> &isMultiple) {
-    for (int i = 0; i < upperBound; i++) {
+void fillMap(map <long,bool> &isMultiple) {
+    for (long i = 0; i < upperBound; i++) {
         isMultiple[i] = true;
     }
 }
 
-void findPrimes(map <int,bool> &isMultiple, int ticketArray[sqrtOfUpperBound]) {
-    int ticket = getTicket(ticketArray);
+void findPrimes(long startingNum, map <long,bool> &isMultiple, long ticketArray[sqrtOfUpperBound]) {
+    long ticket = startingNum;
     while (ticket != 0) {
         if (isMultiple[ticket] != true) {
             findMultiples(ticket, isMultiple, ticketArray);
