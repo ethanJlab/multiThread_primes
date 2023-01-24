@@ -20,7 +20,7 @@ void findAllPrimes(vector <bool> &primeList, vector <bool> &ticketArray, int sta
 int main() {
     // start timer
     auto start = high_resolution_clock::now();
-    cout << "Program started" << endl;
+    cout << "Program Started" << endl;
 
     vector <bool> primeList(upperBound, true);
     //false if not yet used (or dont need to use)
