@@ -3,6 +3,7 @@
 #include <mutex>
 #include <chrono>
 #include <vector>
+#include <fstream>
 using namespace std;
 using namespace std::chrono;
 
@@ -66,14 +67,37 @@ int main() {
     t8.join();
     
     auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start);
+    auto duration = duration_cast<milliseconds>(stop - start);
 
-    cout << "Sum of all primes: " << sum << endl;
-    cout << "Number of primes: " << numPrimes << endl;
+    //array of 10 highest primes by going through the prime list backwards
+    int highestPrimes[10];
+    int index = 0;
+    for (int i = upperBound - 2; i > 0; i-=2) {
+        if (primeList[i] == true) {
+            highestPrimes[index] = i;
+            index++;
+        }
+        if (index == 10) {
+            break;
+        }
+    }
 
-    // end timer
-    cout << "Microseconds: " << duration.count() << " microseconds" << endl;
-    cout << "Seconds: " << duration.count() / 1000000.0 << " seconds" << endl;
+    //print out the 10 highest primes to a file names primes.txt
+    ofstream myfile;
+    myfile.open("primes.txt");
+    myfile << "Execution Time: " << duration.count() << "ms" << endl;
+    myfile << "Total Primes: " << numPrimes << endl;
+    myfile << "Sum of Primes: " << sum << endl;
+    myfile << "Highest Primes: [";
+    for (int i = 9; i >= 0; i--) {
+        if (i != 0) {
+            myfile << highestPrimes[i] << ", ";
+        } else {
+            myfile << highestPrimes[i];
+        }
+    }
+    myfile << "]" << endl;
+    myfile.close();
 
     return 0;
 
