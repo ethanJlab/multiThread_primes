@@ -15,7 +15,10 @@ long long numPrimes = 1;
 
 void checkNonPrimes(long long start, vector <bool> &primeList);
 int getNextNumber(vector <bool> &ticketArray, int start, vector <bool> &primeList);
+void findSomePrimes(vector <bool> &primeList, vector <bool> &ticketArray, int start);
+void checkAllNonePrimes(long long start, vector <bool> &primeList);
 void findAllPrimes(vector <bool> &primeList, vector <bool> &ticketArray, int start);
+void addPrimes(vector <bool> &primeList, int start);
 
 int main() {
     // start timer
@@ -32,36 +35,38 @@ int main() {
     ticketArray[0] = true;
     ticketArray[1] = true;    
 
-    thread t1(findAllPrimes, ref(primeList), ref(ticketArray), 3);
-    thread t2(findAllPrimes, ref(primeList), ref(ticketArray), 5);
-    thread t3(findAllPrimes, ref(primeList), ref(ticketArray), 7);
-    thread t4(findAllPrimes, ref(primeList), ref(ticketArray), 11);
-    //thread t5(findAllPrimes, ref(primeList), ref(ticketArray), 13);
-    //thread t6(findAllPrimes, ref(primeList), ref(ticketArray), 17);
-    //thread t7(findAllPrimes, ref(primeList), ref(ticketArray), 19);
-    //thread t8(findAllPrimes, ref(primeList), ref(ticketArray), 23);
+    thread t1(findSomePrimes, ref(primeList), ref(ticketArray), 3);
+    thread t2(findSomePrimes, ref(primeList), ref(ticketArray), 5);
+    thread t3(findSomePrimes, ref(primeList), ref(ticketArray), 7);
+    thread t4(findSomePrimes, ref(primeList), ref(ticketArray), 11);
 
     t1.join();
     t2.join();
     t3.join();
     t4.join();
-    //t5.join();
-    //t6.join();
-    //t7.join();
-    //t8.join();
 
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start);
-
+    // repopulate the ticket array with the primes from the prime list < sqrtOfUpperBound
     
-   
-
-    for (long long i = 3; i < upperBound; i+=2) {
+    for (int i = 0; i < sqrtOfUpperBound; i++) {
         if (primeList[i] == true) {
-            sum += i;
-            numPrimes++;
+            ticketArray[i] = false;
         }
     }
+
+    thread t5(findAllPrimes, ref(primeList), ref(ticketArray), 3);  
+    thread t6(findAllPrimes, ref(primeList), ref(ticketArray), 11);
+
+    t5.join();
+    t6.join();    
+    
+    thread t7(addPrimes, ref(primeList), 1);
+    thread t8(addPrimes, ref(primeList), 2);
+
+    t7.join();
+    t8.join();
+    
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
 
     cout << "Sum of all primes: " << sum << endl;
     cout << "Number of primes: " << numPrimes << endl;
@@ -76,7 +81,7 @@ int main() {
 
 void checkNonPrimes(long long start, vector <bool> &primeList) {
       
-    for (long long i = start * start; i < upperBound; i += start) {
+    for (long long i = start * start; i < sqrtOfUpperBound; i += start) {
         if (primeList[i] == false) {
             continue;
         }
@@ -105,12 +110,66 @@ int getNextNumber(vector <bool> &ticketArray, int start, vector <bool> &primeLis
     
 }
 
-void findAllPrimes(vector <bool> &primeList, vector <bool> &ticketArray, int start) {
+void findSomePrimes(vector <bool> &primeList, vector <bool> &ticketArray, int start) {
     int nextNumber = start;
     while (nextNumber != -1) {
         checkNonPrimes(nextNumber, primeList);
         nextNumber = getNextNumber(ticketArray, nextNumber + 1, primeList);
     }
+}
+
+void checkAllNonePrimes(long long start, vector <bool> &primeList) {
+    // find the multiple of start that is greater than sqrtOfUpperBound
+    long long multiple = start * start;
+    while (multiple < sqrtOfUpperBound) {
+        multiple += start;
+    }
+      
+    for (long long i = multiple; i < upperBound; i += start) {
+        if (primeList[i] == false) {
+            continue;
+        }
+        mtx.lock();
+        primeList[i] = false;
+        mtx.unlock();
+    }
+}
+
+void findAllPrimes(vector <bool> &primeList, vector <bool> &ticketArray, int start) {
+    int nextNumber = start;
+    while (nextNumber != -1) {
+        checkAllNonePrimes(nextNumber, primeList);
+        nextNumber = getNextNumber(ticketArray, nextNumber + 1, primeList);
+    }
+}
+
+void addPrimes(vector <bool> &primeList, int start) {
+    long long tempSum = sum;
+    long long tempNumPrimes = numPrimes;
+    if (start == 1) {
+        for (long long i = 3; i < upperBound; i+=2) {
+            if (primeList[i] == true) {
+                tempSum += i;
+                tempNumPrimes++;
+            }
+        }
+        mtx.lock();
+        sum = tempSum;
+        numPrimes = tempNumPrimes;
+        mtx.unlock();
+    } else {
+        for (long long i = sqrtOfUpperBound; i < upperBound; i+=2) {
+            if (primeList[i] == true) {
+                tempSum += i;
+                tempNumPrimes++;
+            }
+        }
+        mtx.lock();
+        sum = tempSum;
+        numPrimes = tempNumPrimes;
+        mtx.unlock();
+    }
+    
 }
 
 
