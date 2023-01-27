@@ -22,16 +22,17 @@ I also tested other values to ensure that the program was working as intended. T
 
 ### 1k:
 - Execution Time: 1ms
-- Total Primes: 311
-- Sum of Primes: 151194
+- Total Primes: 168
+- Sum of Primes: 76127 
 - Highest Primes: [937, 941, 947, 953, 967, 971, 977, 983, 991, 997]
 
 
 ### 10k: 
 - Execution Time: 2ms
-- Total Primes: 1205
-- Sum of Primes: 5735338
+- Total Primes: 1229
+- Sum of Primes: 5736396
 - Highest Primes: [9887, 9901, 9907, 9923, 9929, 9931, 9941, 9949, 9967, 9973]
+
 
 ### 1M:
 - Execution Time: 84ms
