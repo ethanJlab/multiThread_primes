@@ -20,12 +20,30 @@ During testing, this program consistently runs in < 10 sec.
 
 I also tested other values to ensure that the program was working as intended. The following upperbounds were tested below with the following results.
 
-10k: 
-Execution Time: 2ms
-Total Primes: 1205
-Sum of Primes: 5735338
-Highest Primes: [9887, 9901, 9907, 9923, 9929, 9931, 9941, 9949, 9967, 9973]
+### 1k:
+- Execution Time: 1ms
+- Total Primes: 311
+- Sum of Primes: 151194
+- Highest Primes: [937, 941, 947, 953, 967, 971, 977, 983, 991, 997]
 
-1M:
+
+### 10k: 
+- Execution Time: 2ms
+- Total Primes: 1205
+- Sum of Primes: 5735338
+- Highest Primes: [9887, 9901, 9907, 9923, 9929, 9931, 9941, 9949, 9967, 9973]
+
+### 1M:
+- Execution Time: 84ms
+- Total Primes: 78498
+- Sum of Primes: 37550402023
+- Highest Primes: [999863, 999883, 999907, 999917, 999931, 999953, 999959, 999961, 999979, 999983]
+
+### 100M:
+- Execution Time: 8132ms
+- Total Primes: 5760227
+- Sum of Primes: 279209784650882
+- Highest Primes: [99999787, 99999821, 99999827, 99999839, 99999847, 99999931, 99999941, 99999959, 99999971, 99999989]
+
 
 
