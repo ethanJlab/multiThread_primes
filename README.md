@@ -17,3 +17,15 @@ Although there are fewer elements in the ticket array, these 4 threads are still
 
 At this point, the PrimeList should only contain prime numbers. We can then use this vector to find the number of primes in the range, the sum of the primes, and the top 10 primes.
 During testing, this program consistently runs in < 10 sec.
+
+I also tested other values to ensure that the program was working as intended. The following upperbounds were tested below with the following results.
+
+10k: 
+Execution Time: 2ms
+Total Primes: 1205
+Sum of Primes: 5735338
+Highest Primes: [9887, 9901, 9907, 9923, 9929, 9931, 9941, 9949, 9967, 9973]
+
+1M:
+
+
