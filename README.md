@@ -1,5 +1,10 @@
 # Programming Assignment 1
 
+## How To run
+- Run the command ``` g++ -o 100M  sieve.cpp ``` to compile the source code
+- Run the executable with the command ``` .\100M.exe ```
+
+## Summary
 In my approach to finding all prime numbers from 1 - 10<sup>8</sup>, I used the Sieve of Eratosthenes to mark all non primes.
 
 My method starts with 2 vector arrays;
