@@ -9,8 +9,8 @@ using namespace std::chrono;
 
 std::mutex mtx;
 
-const long long upperBound = 100000000 + 1;
-const long long sqrtOfUpperBound = 10000 + 1;
+const long long upperBound = 1000000 + 1;
+const long long sqrtOfUpperBound = 1000 + 1;
 long long sum = 2;
 long long numPrimes = 1;
 
@@ -37,9 +37,9 @@ int main() {
     ticketArray[1] = true;    
 
     thread t1(findSomePrimes, ref(primeList), ref(ticketArray), 3);
-    thread t2(findSomePrimes, ref(primeList), ref(ticketArray), 5);
-    thread t3(findSomePrimes, ref(primeList), ref(ticketArray), 7);
-    thread t4(findSomePrimes, ref(primeList), ref(ticketArray), 11);
+    thread t2(findSomePrimes, ref(primeList), ref(ticketArray), getNextNumber(ticketArray, 5, primeList));
+    thread t3(findSomePrimes, ref(primeList), ref(ticketArray), getNextNumber(ticketArray, 7, primeList));
+    thread t4(findSomePrimes, ref(primeList), ref(ticketArray), getNextNumber(ticketArray, 11, primeList));
 
     t1.join();
     t2.join();
@@ -55,19 +55,25 @@ int main() {
     }
 
     thread t5(findAllPrimes, ref(primeList), ref(ticketArray), 3);  
-    thread t6(findAllPrimes, ref(primeList), ref(ticketArray), 11);
+    thread t6(findAllPrimes, ref(primeList), ref(ticketArray), getNextNumber(ticketArray, 5, primeList));
+    thread t7(findAllPrimes, ref(primeList), ref(ticketArray), getNextNumber(ticketArray, 7, primeList));
+    thread t8(findAllPrimes, ref(primeList), ref(ticketArray), getNextNumber(ticketArray, 11, primeList));
 
     t5.join();
-    t6.join();    
-    
-    thread t7(addPrimes, ref(primeList), 1);
-    thread t8(addPrimes, ref(primeList), 2);
-
+    t6.join();
     t7.join();
     t8.join();
     
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(stop - start);
+
+    // add up all the primes
+    for (int i = 3; i < upperBound; i+=2) {
+        if (primeList[i] == true) {
+            sum += i;
+            numPrimes++;
+        }
+    }
 
     //array of 10 highest primes by going through the prime list backwards
     int highestPrimes[10];

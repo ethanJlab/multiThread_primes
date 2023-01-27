@@ -5,6 +5,7 @@
         "thread": "cpp",
         "type_traits": "cpp",
         "iostream": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "vector": "cpp"
     }
 }
