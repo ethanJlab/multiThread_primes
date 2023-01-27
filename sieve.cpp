@@ -9,8 +9,8 @@ using namespace std::chrono;
 
 std::mutex mtx;
 
-const long long upperBound = 1000000 + 1;
-const long long sqrtOfUpperBound = 1000 + 1;
+const long long upperBound = 100000000 + 1;
+const long long sqrtOfUpperBound = 10000 + 1;
 long long sum = 2;
 long long numPrimes = 1;
 
